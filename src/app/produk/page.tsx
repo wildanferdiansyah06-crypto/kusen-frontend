@@ -1,15 +1,45 @@
+import { useEffect, useState } from 'react';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
+export default function ProdukPage() {
+  const [kusenList, setKusenList] = useState<Kusen[]>([]);
+  const [wishlist, setWishlist] = useState<number[]>(() => {
+    if (typeof window !== 'undefined') {
+      const savedWishlist = localStorage.getItem('wishlist');
+      return savedWishlist ? JSON.parse(savedWishlist) : [];
+    }
+    return [];
+  });
+  const [loading, setLoading] = useState(true);
 
-export default async function ProdukPage() {
-  let kusenList: Kusen[] = [];
-  try {
-    kusenList = await fetchKusenList();
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
+  useEffect(() => {
+    fetchKusenList()
+      .then(data => {
+        setKusenList(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to fetch products:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  const toggleWishlist = (productId: number) => {
+    const newWishlist = wishlist.includes(productId)
+      ? wishlist.filter(id => id !== productId)
+      : [...wishlist, productId];
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
+        <div className="text-2xl font-bold text-orange-600">Loading...</div>
+      </div>
+    );
   }
 
   return (
@@ -29,6 +59,9 @@ export default async function ProdukPage() {
               <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
               <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
               <Link href="/kategori/Jendela" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Jendela</Link>
+              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+                ❤️ Wishlist ({wishlist.length})
+              </Link>
               <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
               </Link>
@@ -88,6 +121,12 @@ export default async function ProdukPage() {
                   Rp {kusen.harga.toLocaleString('id-ID')}
                 </div>
                 <div className="flex gap-3">
+                  <button 
+                    onClick={() => toggleWishlist(kusen.id)}
+                    className="bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
+                  >
+                    {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
+                  </button>
                   <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white py-3 rounded-xl text-center font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-md hover:shadow-lg">
                     Detail
                   </Link>

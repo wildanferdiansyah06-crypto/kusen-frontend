@@ -9,6 +9,13 @@ export default function Home() {
   const [kusenList, setKusenList] = useState<Kusen[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Kusen[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [wishlist, setWishlist] = useState<number[]>(() => {
+    if (typeof window !== 'undefined') {
+      const savedWishlist = localStorage.getItem('wishlist');
+      return savedWishlist ? JSON.parse(savedWishlist) : [];
+    }
+    return [];
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,6 +37,14 @@ export default function Home() {
     if (searchQuery.trim()) {
       window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
     }
+  };
+
+  const toggleWishlist = (productId: number) => {
+    const newWishlist = wishlist.includes(productId)
+      ? wishlist.filter(id => id !== productId)
+      : [...wishlist, productId];
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
   };
 
   if (loading) {
@@ -57,6 +72,9 @@ export default function Home() {
               <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
               <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
               <Link href="/kategori/Jendela" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Jendela</Link>
+              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+                ❤️ Wishlist ({wishlist.length})
+              </Link>
               <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
               </Link>
@@ -179,11 +197,18 @@ export default function Home() {
                   <div className="flex gap-2 mb-4 text-sm text-gray-600">
                     <span className="bg-gray-100 px-2 py-1 rounded">{kusen.jenisKayu}</span>
                     <span className="bg-gray-100 px-2 py-1 rounded">{kusen.panjang} cm</span>
+                    <span className="bg-gray-100 px-2 py-1 rounded">{kusen.lebar} cm</span>
                   </div>
                   <div className="text-2xl font-bold text-orange-600 mb-5">
                     Rp {kusen.harga.toLocaleString('id-ID')}
                   </div>
                   <div className="flex gap-3">
+                    <button 
+                      onClick={() => toggleWishlist(kusen.id)}
+                      className="bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
+                    >
+                      {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
+                    </button>
                     <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white py-3 rounded-xl text-center font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-md hover:shadow-lg">
                       Detail
                     </Link>

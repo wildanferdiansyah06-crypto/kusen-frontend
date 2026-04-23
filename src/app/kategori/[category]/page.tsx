@@ -11,6 +11,13 @@ export default function CategoryPage({ params }: { params: { category: string } 
   const [sortBy, setSortBy] = useState('Terbaru');
   const [filterWood, setFilterWood] = useState('Semua');
   const [filterPrice, setFilterPrice] = useState('Semua');
+  const [wishlist, setWishlist] = useState<number[]>(() => {
+    if (typeof window !== 'undefined') {
+      const savedWishlist = localStorage.getItem('wishlist');
+      return savedWishlist ? JSON.parse(savedWishlist) : [];
+    }
+    return [];
+  });
 
   useEffect(() => {
     fetchKusenByCategory(params.category)
@@ -23,6 +30,14 @@ export default function CategoryPage({ params }: { params: { category: string } 
         setLoading(false);
       });
   }, [params.category]);
+
+  const toggleWishlist = (productId: number) => {
+    const newWishlist = wishlist.includes(productId)
+      ? wishlist.filter(id => id !== productId)
+      : [...wishlist, productId];
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+  };
 
   const filteredKusen = useMemo(() => {
     let filtered = [...kusenList];
@@ -88,6 +103,9 @@ export default function CategoryPage({ params }: { params: { category: string } 
               <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
               <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
               <Link href="/kategori/Jendela" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Jendela</Link>
+              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+                ❤️ Wishlist ({wishlist.length})
+              </Link>
               <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
               </Link>
@@ -211,6 +229,12 @@ export default function CategoryPage({ params }: { params: { category: string } 
                   Rp {kusen.harga.toLocaleString('id-ID')}
                 </div>
                 <div className="flex gap-3">
+                  <button 
+                    onClick={() => toggleWishlist(kusen.id)}
+                    className="bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
+                  >
+                    {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
+                  </button>
                   <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white py-3 rounded-xl text-center font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-md hover:shadow-lg">
                     Detail
                   </Link>

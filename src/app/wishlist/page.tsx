@@ -1,16 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
-  const [filteredKusen, setFilteredKusen] = useState<Kusen[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<number[]>(() => {
     if (typeof window !== 'undefined') {
       const savedWishlist = localStorage.getItem('wishlist');
@@ -18,28 +13,21 @@ export default function SearchPage() {
     }
     return [];
   });
+  const [wishlistProducts, setWishlistProducts] = useState<Kusen[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchKusenList()
       .then(data => {
-        if (query) {
-          const filtered = data.filter(k => 
-            k.nama.toLowerCase().includes(query.toLowerCase()) ||
-            k.deskripsi.toLowerCase().includes(query.toLowerCase()) ||
-            k.kategori.toLowerCase().includes(query.toLowerCase()) ||
-            k.jenisKayu.toLowerCase().includes(query.toLowerCase())
-          );
-          setFilteredKusen(filtered);
-        } else {
-          setFilteredKusen(data);
-        }
+        const wishlistItems = data.filter(k => wishlist.includes(k.id));
+        setWishlistProducts(wishlistItems);
         setLoading(false);
       })
       .catch(err => {
         console.error('Failed to fetch products:', err);
         setLoading(false);
       });
-  }, [query]);
+  }, [wishlist]);
 
   const toggleWishlist = (productId: number) => {
     const newWishlist = wishlist.includes(productId)
@@ -66,11 +54,11 @@ export default function SearchPage() {
               <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
               <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
               <Link href="/kategori/Jendela" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Jendela</Link>
-              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
-                ❤️ Wishlist ({wishlist.length})
-              </Link>
               <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
+              </Link>
+              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1 font-bold">
+                ❤️ Wishlist
               </Link>
             </nav>
           </div>
@@ -78,14 +66,14 @@ export default function SearchPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Search Header */}
+        {/* Wishlist Header */}
         <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-2xl">
           <div className="flex items-center gap-4">
-            <div className="text-6xl">🔍</div>
+            <div className="text-6xl">❤️</div>
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">Hasil Pencarian</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-2">Wishlist Saya</h1>
               <p className="text-lg md:text-xl opacity-90">
-                {query ? `"${query}"` : 'Semua produk'} - {filteredKusen.length} hasil ditemukan
+                {wishlistProducts.length} produk tersimpan
               </p>
             </div>
           </div>
@@ -97,9 +85,9 @@ export default function SearchPage() {
           </div>
         ) : (
           <>
-            {filteredKusen.length > 0 ? (
+            {wishlistProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredKusen.map((kusen) => (
+                {wishlistProducts.map((kusen) => (
                   <div key={kusen.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
                     <div className="relative overflow-hidden">
                       {kusen.gambarUrl ? (
@@ -145,9 +133,9 @@ export default function SearchPage() {
                       <div className="flex gap-3">
                         <button 
                           onClick={() => toggleWishlist(kusen.id)}
-                          className="bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
+                          className="bg-red-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-red-600 transition-all duration-300 flex items-center justify-center"
                         >
-                          {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
+                          🗑️ Hapus
                         </button>
                         <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white py-3 rounded-xl text-center font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-md hover:shadow-lg">
                           Detail
@@ -159,13 +147,11 @@ export default function SearchPage() {
               </div>
             ) : (
               <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100">
-                <div className="text-8xl mb-6">🔍</div>
-                <h3 className="text-3xl font-bold text-gray-800 mb-4">Produk Tidak Ditemukan</h3>
-                <p className="text-gray-600 text-lg mb-8">
-                  {query ? `Tidak ada produk yang cocok dengan "${query}"` : 'Tidak ada produk tersedia'}
-                </p>
+                <div className="text-8xl mb-6">❤️</div>
+                <h3 className="text-3xl font-bold text-gray-800 mb-4">Wishlist Kosong</h3>
+                <p className="text-gray-600 text-lg mb-8">Belum ada produk yang Anda simpan di wishlist.</p>
                 <Link href="/produk" className="inline-block bg-gradient-to-r from-orange-600 to-amber-600 text-white px-10 py-4 rounded-xl font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
-                  Lihat Semua Produk
+                  Jelajahi Produk
                 </Link>
               </div>
             )}
