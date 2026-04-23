@@ -18,6 +18,13 @@ function SearchPageContent() {
     }
     return [];
   });
+  const [cart, setCart] = useState<{ [key: number]: { kusen: Kusen, quantity: number } }>(() => {
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : {};
+    }
+    return {};
+  });
 
   useEffect(() => {
     fetchKusenList()
@@ -49,6 +56,17 @@ function SearchPageContent() {
     localStorage.setItem('wishlist', JSON.stringify(newWishlist));
   };
 
+  const addToCart = (kusen: Kusen) => {
+    const newCart = { ...cart };
+    if (newCart[kusen.id]) {
+      newCart[kusen.id].quantity += 1;
+    } else {
+      newCart[kusen.id] = { kusen, quantity: 1 };
+    }
+    setCart(newCart);
+    localStorage.setItem('cart', JSON.stringify(newCart));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
       {/* Header */}
@@ -70,7 +88,7 @@ function SearchPageContent() {
                 ❤️ Wishlist ({wishlist.length})
               </Link>
               <Link href="/cart" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
-                🛒 Keranjang
+                🛒 Keranjang ({Object.values(cart).length})
               </Link>
             </nav>
           </div>
@@ -149,7 +167,13 @@ function SearchPageContent() {
                         >
                           {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
                         </button>
-                        <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl text-center font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg">
+                        <button 
+                          onClick={() => addToCart(kusen)}
+                          className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg"
+                        >
+                          + Keranjang
+                        </button>
+                        <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white py-3 rounded-xl text-center font-bold hover:from-slate-700 hover:to-slate-800 transition-all duration-300 shadow-md hover:shadow-lg">
                           Detail
                         </Link>
                       </div>

@@ -18,6 +18,13 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
     }
     return [];
   });
+  const [cart, setCart] = useState<{ [key: number]: { kusen: Kusen, quantity: number } }>(() => {
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : {};
+    }
+    return {};
+  });
   const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
@@ -41,6 +48,17 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       : [...wishlist, productId];
     setWishlist(newWishlist);
     localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+  };
+
+  const addToCart = (kusen: Kusen) => {
+    const newCart = { ...cart };
+    if (newCart[kusen.id]) {
+      newCart[kusen.id].quantity += 1;
+    } else {
+      newCart[kusen.id] = { kusen, quantity: 1 };
+    }
+    setCart(newCart);
+    localStorage.setItem('cart', JSON.stringify(newCart));
   };
 
   const filteredKusen = useMemo(() => {
@@ -111,7 +129,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
                 ❤️ Wishlist ({wishlist.length})
               </Link>
               <Link href="/cart" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
-                🛒 Keranjang
+                🛒 Keranjang ({Object.values(cart).length})
               </Link>
             </nav>
           </div>
@@ -188,9 +206,10 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredKusen.map((kusen) => (
-            <div key={kusen.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+        {filteredKusen.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredKusen.map((kusen) => (
+              <div key={kusen.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
               <div className="relative overflow-hidden">
                 {kusen.gambarUrl ? (
                   <Image 
@@ -239,21 +258,26 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
                   >
                     {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
                   </button>
-                  <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl text-center font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg">
+                  <button 
+                    onClick={() => addToCart(kusen)}
+                    className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg"
+                  >
+                    + Keranjang
+                  </button>
+                  <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-600 to-slate-700 text-white py-3 rounded-xl text-center font-bold hover:from-slate-700 hover:to-slate-800 transition-all duration-300 shadow-md hover:shadow-lg">
                     Detail
                   </Link>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {filteredKusen.length === 0 && (
+            ))}
+          </div>
+        ) : (
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100">
             <div className="text-8xl mb-6">🔍</div>
             <h3 className="text-3xl font-bold text-gray-800 mb-4">Produk Tidak Ditemukan</h3>
             <p className="text-gray-600 text-lg mb-8">Belum ada produk dalam kategori ini.</p>
-            <Link href="/produk" className="inline-block bg-gradient-to-r from-orange-600 to-amber-600 text-white px-10 py-4 rounded-xl font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+            <Link href="/produk" className="inline-block bg-gradient-to-r from-slate-700 to-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
               Lihat Semua Produk
             </Link>
           </div>
