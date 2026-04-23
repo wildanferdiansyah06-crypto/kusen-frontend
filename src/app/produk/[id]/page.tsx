@@ -1,13 +1,50 @@
-import { fetchKusenById } from '@/lib/api';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { fetchKusenById, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const kusen = await fetchKusenById(parseInt(params.id));
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const [kusen, setKusen] = useState<Kusen | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!kusen) {
-    notFound();
+  useEffect(() => {
+    fetchKusenById(parseInt(params.id))
+      .then(data => {
+        if (!data) {
+          setNotFound(true);
+        } else {
+          setKusen(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch product:', err);
+        setLoading(false);
+      });
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
+        <div className="text-2xl font-bold text-orange-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (notFound || !kusen) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Produk Tidak Ditemukan</h1>
+          <Link href="/produk" className="inline-block bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
+            Kembali ke Produk
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
