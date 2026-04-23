@@ -50,26 +50,26 @@ function SearchPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
       {/* Header */}
-      <header className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 text-white shadow-xl backdrop-blur-sm sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-xl backdrop-blur-sm sticky top-0 z-50 border-b border-slate-700">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
               <span className="text-4xl drop-shadow-lg">🏠</span>
-              <span className="bg-gradient-to-r from-white via-amber-100 to-amber-200 bg-clip-text text-transparent font-extrabold text-2xl md:text-3xl tracking-tight">
+              <span className="bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text text-transparent font-extrabold text-2xl md:text-3xl tracking-tight">
                 Toko Kusen Online
               </span>
             </Link>
             <nav className="hidden md:flex gap-6 text-sm font-medium">
-              <Link href="/" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Beranda</Link>
-              <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
-              <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
-              <Link href="/kategori/Jendela" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Jendela</Link>
-              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+              <Link href="/" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Beranda</Link>
+              <Link href="/produk" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Semua Produk</Link>
+              <Link href="/kategori/Pintu" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Pintu</Link>
+              <Link href="/kategori/Jendela" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Jendela</Link>
+              <Link href="/wishlist" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 ❤️ Wishlist ({wishlist.length})
               </Link>
-              <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+              <Link href="/cart" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
               </Link>
             </nav>
@@ -79,7 +79,7 @@ function SearchPageContent() {
 
       <main className="container mx-auto px-4 py-8">
         {/* Search Header */}
-        <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-2xl">
+        <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-2xl">
           <div className="flex items-center gap-4">
             <div className="text-6xl">🔍</div>
             <div>
@@ -93,7 +93,7 @@ function SearchPageContent() {
 
         {loading ? (
           <div className="text-center py-20">
-            <div className="text-2xl font-bold text-orange-600">Loading...</div>
+            <div className="text-2xl font-bold text-slate-600">Loading...</div>
           </div>
         ) : (
           <>
@@ -111,7 +111,7 @@ function SearchPageContent() {
                           className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-56 bg-gradient-to-br from-orange-200 to-amber-300 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        <div className="w-full h-56 bg-gradient-to-br from-slate-200 to-gray-300 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                           <span className="text-7xl">🪵</span>
                         </div>
                       )}
@@ -119,7 +119,7 @@ function SearchPageContent() {
                         <span className="absolute top-3 left-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Baru</span>
                       )}
                       {kusen.terjual >= 50 && (
-                        <span className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Best Seller</span>
+                        <span className="absolute top-3 left-3 bg-slate-700 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Best Seller</span>
                       )}
                       {!kusen.tersedia && (
                         <span className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Habis</span>
@@ -127,8 +127,8 @@ function SearchPageContent() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
                     </div>
                     <div className="p-6">
-                      <span className="text-xs font-bold text-orange-600 uppercase tracking-wide">{kusen.kategori}</span>
-                      <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">{kusen.nama}</h3>
+                      <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">{kusen.kategori}</span>
+                      <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3 line-clamp-2 group-hover:text-slate-600 transition-colors">{kusen.nama}</h3>
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-yellow-500 text-lg">★★★★★</span>
                         <span className="text-sm text-gray-600 font-medium">({kusen.rating})</span>
@@ -139,17 +139,17 @@ function SearchPageContent() {
                         <span className="bg-gray-100 px-2 py-1 rounded">{kusen.panjang} cm</span>
                         <span className="bg-gray-100 px-2 py-1 rounded">{kusen.lebar} cm</span>
                       </div>
-                      <div className="text-2xl font-bold text-orange-600 mb-5">
+                      <div className="text-2xl font-bold text-slate-700 mb-5">
                         Rp {kusen.harga.toLocaleString('id-ID')}
                       </div>
                       <div className="flex gap-3">
                         <button 
                           onClick={() => toggleWishlist(kusen.id)}
-                          className="bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
+                          className="bg-slate-200 text-slate-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
                         >
                           {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
                         </button>
-                        <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white py-3 rounded-xl text-center font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                        <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl text-center font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg">
                           Detail
                         </Link>
                       </div>

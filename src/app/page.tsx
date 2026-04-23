@@ -49,33 +49,33 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
-        <div className="text-2xl font-bold text-orange-600">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
+        <div className="text-2xl font-bold text-slate-600">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
       {/* Header */}
-      <header className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 text-white shadow-xl backdrop-blur-sm sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-xl backdrop-blur-sm sticky top-0 z-50 border-b border-slate-700">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
               <span className="text-4xl drop-shadow-lg">🏠</span>
-              <span className="bg-gradient-to-r from-white via-amber-100 to-amber-200 bg-clip-text text-transparent font-extrabold text-2xl md:text-3xl tracking-tight">
+              <span className="bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text text-transparent font-extrabold text-2xl md:text-3xl tracking-tight">
                 Toko Kusen Online
               </span>
             </Link>
             <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
-              <Link href="/" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Beranda</Link>
-              <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
-              <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
-              <Link href="/kategori/Jendela" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Jendela</Link>
-              <Link href="/wishlist" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+              <Link href="/" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Beranda</Link>
+              <Link href="/produk" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Semua Produk</Link>
+              <Link href="/kategori/Pintu" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Pintu</Link>
+              <Link href="/kategori/Jendela" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Jendela</Link>
+              <Link href="/wishlist" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 ❤️ Wishlist ({wishlist.length})
               </Link>
-              <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
+              <Link href="/cart" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
               </Link>
               <form onSubmit={handleSearch} className="relative">
@@ -84,7 +84,7 @@ export default function Home() {
                   placeholder="Cari..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white/20 text-white placeholder-white/70 px-3 py-1 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-white/50 w-32"
+                  className="bg-slate-700 text-white placeholder-slate-400 px-3 py-1 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 w-32"
                 />
               </form>
             </nav>
@@ -94,10 +94,10 @@ export default function Home() {
 
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-orange-600 via-amber-600 to-orange-700 rounded-3xl p-8 md:p-16 text-white mb-16 shadow-2xl relative overflow-hidden">
+        <section className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 rounded-3xl p-8 md:p-16 text-white mb-16 shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-orange-300/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-600/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
           <div className="relative max-w-4xl">
             <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
               Kusen Kayu Berkualitas Premium
@@ -106,11 +106,11 @@ export default function Home() {
               Temukan berbagai jenis kusen kayu berkualitas tinggi untuk hunian impian Anda. Dari kayu jati premium hingga kayu ulin tahan air.
             </p>
             <div className="flex gap-4 flex-wrap mb-12">
-              <Link href="/produk" className="bg-white text-orange-600 px-8 py-4 rounded-xl font-bold hover:bg-amber-100 hover:scale-105 transition-all duration-300 shadow-lg">
+              <Link href="/produk" className="bg-white text-slate-800 px-8 py-4 rounded-xl font-bold hover:bg-slate-100 hover:scale-105 transition-all duration-300 shadow-lg">
                 Lihat Produk
               </Link>
-              <Link href="/tentang" className="border-2 border-white/50 px-8 py-4 rounded-xl font-bold hover:bg-white/20 hover:scale-105 transition-all duration-300">
-                Tentang Kami
+              <Link href="/kategori/Pintu" className="bg-slate-700/50 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-600/50 hover:scale-105 transition-all duration-300 backdrop-blur-sm border border-slate-500/30">
+                Kategori Pintu
               </Link>
             </div>
             <div className="grid grid-cols-3 gap-8">
@@ -139,17 +139,17 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Link href="/kategori/Pintu" className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center border border-gray-100">
               <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">🚪</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors">Pintu</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-slate-600 transition-colors">Pintu</h3>
               <p className="text-gray-600">Kusen pintu berkualitas dari berbagai jenis kayu</p>
             </Link>
             <Link href="/kategori/Jendela" className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center border border-gray-100">
               <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">🪟</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors">Jendela</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-slate-600 transition-colors">Jendela</h3>
               <p className="text-gray-600">Jendela kayu dengan desain modern dan klasik</p>
             </Link>
             <Link href="/kategori/Daun Pintu" className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center border border-gray-100">
               <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">🚪</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors">Daun Pintu</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-slate-600 transition-colors">Daun Pintu</h3>
               <p className="text-gray-600">Daun pintu solid dengan finishing premium</p>
             </Link>
           </div>
@@ -174,7 +174,7 @@ export default function Home() {
                       className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-56 bg-gradient-to-br from-orange-200 to-amber-300 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                    <div className="w-full h-56 bg-gradient-to-br from-slate-200 to-gray-300 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                       <span className="text-7xl">🪵</span>
                     </div>
                   )}
@@ -182,13 +182,13 @@ export default function Home() {
                     <span className="absolute top-3 left-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Baru</span>
                   )}
                   {kusen.terjual >= 50 && (
-                    <span className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Best Seller</span>
+                    <span className="absolute top-3 left-3 bg-slate-700 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Best Seller</span>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
                 </div>
                 <div className="p-6">
-                  <span className="text-xs font-bold text-orange-600 uppercase tracking-wide">{kusen.kategori}</span>
-                  <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">{kusen.nama}</h3>
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">{kusen.kategori}</span>
+                  <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3 line-clamp-2 group-hover:text-slate-600 transition-colors">{kusen.nama}</h3>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-yellow-500 text-lg">★★★★★</span>
                     <span className="text-sm text-gray-600 font-medium">({kusen.rating})</span>
@@ -199,17 +199,17 @@ export default function Home() {
                     <span className="bg-gray-100 px-2 py-1 rounded">{kusen.panjang} cm</span>
                     <span className="bg-gray-100 px-2 py-1 rounded">{kusen.lebar} cm</span>
                   </div>
-                  <div className="text-2xl font-bold text-orange-600 mb-5">
+                  <div className="text-2xl font-bold text-slate-700 mb-5">
                     Rp {kusen.harga.toLocaleString('id-ID')}
                   </div>
                   <div className="flex gap-3">
                     <button 
                       onClick={() => toggleWishlist(kusen.id)}
-                      className="bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
+                      className="bg-slate-200 text-slate-700 px-4 py-3 rounded-xl font-bold hover:bg-red-100 hover:text-red-600 transition-all duration-300 flex items-center justify-center"
                     >
                       {wishlist.includes(kusen.id) ? '❤️' : '🤍'}
                     </button>
-                    <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white py-3 rounded-xl text-center font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl text-center font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg">
                       Detail
                     </Link>
                   </div>
@@ -218,7 +218,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link href="/produk" className="inline-block bg-gradient-to-r from-gray-800 to-gray-900 text-white px-10 py-4 rounded-xl font-bold hover:from-gray-900 hover:to-black transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+            <Link href="/produk" className="inline-block bg-gradient-to-r from-slate-700 to-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
               Lihat Semua Produk →
             </Link>
           </div>
