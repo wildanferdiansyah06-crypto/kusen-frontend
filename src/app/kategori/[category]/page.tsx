@@ -5,7 +5,7 @@ import { fetchKusenByCategory, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
+export default function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const [kusenList, setKusenList] = useState<Kusen[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('Terbaru');
@@ -18,18 +18,22 @@ export default function CategoryPage({ params }: { params: { category: string } 
     }
     return [];
   });
+  const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
-    fetchKusenByCategory(params.category)
-      .then(data => {
-        setKusenList(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch products:', err);
-        setLoading(false);
-      });
-  }, [params.category]);
+    params.then(p => {
+      setCategoryName(p.category);
+      fetchKusenByCategory(p.category)
+        .then(data => {
+          setKusenList(data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Failed to fetch products:', err);
+          setLoading(false);
+        });
+    });
+  }, [params]);
 
   const toggleWishlist = (productId: number) => {
     const newWishlist = wishlist.includes(productId)
@@ -76,7 +80,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
     return filtered;
   }, [kusenList, sortBy, filterWood, filterPrice]);
 
-  const categoryTitle = params.category.charAt(0).toUpperCase() + params.category.slice(1);
+  const categoryTitle = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
 
   if (loading) {
     return (
@@ -125,9 +129,9 @@ export default function CategoryPage({ params }: { params: { category: string } 
               </p>
             </div>
             <div className="hidden md:block text-8xl">
-              {params.category === 'Pintu' && '🚪'}
-              {params.category === 'Jendela' && '🪟'}
-              {params.category === 'Daun Pintu' && '🚪'}
+              {categoryName === 'Pintu' && '🚪'}
+              {categoryName === 'Jendela' && '🪟'}
+              {categoryName === 'Daun Pintu' && '🚪'}
             </div>
           </div>
         </div>
