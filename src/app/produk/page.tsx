@@ -1,32 +1,15 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function ProdukPage() {
-  const [kusenList, setKusenList] = useState<Kusen[]>([]);
-  const [loading, setLoading] = useState(true);
+export const dynamic = 'force-dynamic';
 
-  useEffect(() => {
-    fetchKusenList()
-      .then(data => {
-        setKusenList(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch products:', err);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
-        <div className="text-2xl font-bold text-orange-600">Loading...</div>
-      </div>
-    );
+export default async function ProdukPage() {
+  let kusenList: Kusen[] = [];
+  try {
+    kusenList = await fetchKusenList();
+  } catch (error) {
+    console.error('Failed to fetch products:', error);
   }
 
   return (
