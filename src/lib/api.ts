@@ -21,19 +21,156 @@ export interface Kusen {
 }
 
 export async function fetchKusenList(): Promise<Kusen[]> {
-  const response = await fetch(`${API_URL}/api/kusen`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch kusen list');
+  try {
+    const response = await fetch(`${API_URL}/api/kusen`);
+    if (!response.ok) {
+      console.warn('API not available, using mock data');
+      return getMockKusenList();
+    }
+    return response.json();
+  } catch (error) {
+    console.warn('Failed to fetch from API, using mock data:', error);
+    return getMockKusenList();
   }
-  return response.json();
+}
+
+function getMockKusenList(): Kusen[] {
+  return [
+    {
+      id: 1,
+      nama: 'Pintu Kayu Jati Premium',
+      deskripsi: 'Pintu kayu jati premium dengan desain modern dan finishing natural. Cocok untuk rumah minimalis dan klasik.',
+      harga: 2500000,
+      kategori: 'Pintu',
+      jenisKayu: 'Kayu Jati',
+      panjang: 210,
+      lebar: 90,
+      tebal: 4,
+      material: 'Kayu Jati Solid',
+      warna: 'Natural',
+      gambar: '',
+      gambarUrl: '',
+      stok: 15,
+      tersedia: true,
+      terjual: 45,
+      rating: 4.8
+    },
+    {
+      id: 2,
+      nama: 'Jendela Kayu Meranti',
+      deskripsi: 'Jendela kayu meranti dengan kaca tempered. Tahan cuaca dan awet untuk penggunaan jangka panjang.',
+      harga: 1800000,
+      kategori: 'Jendela',
+      jenisKayu: 'Kayu Meranti',
+      panjang: 120,
+      lebar: 60,
+      tebal: 3,
+      material: 'Kayu Meranti',
+      warna: 'Coklat',
+      gambar: '',
+      gambarUrl: '',
+      stok: 25,
+      tersedia: true,
+      terjual: 32,
+      rating: 4.6
+    },
+    {
+      id: 3,
+      nama: 'Daun Pintu Ulin',
+      deskripsi: 'Daun pintu kayu ulin tahan air. Ideal untuk area lembab seperti kamar mandi.',
+      harga: 3200000,
+      kategori: 'Daun Pintu',
+      jenisKayu: 'Kayu Ulin',
+      panjang: 210,
+      lebar: 90,
+      tebal: 4,
+      material: 'Kayu Ulin Solid',
+      warna: 'Coklat Gelap',
+      gambar: '',
+      gambarUrl: '',
+      stok: 10,
+      tersedia: true,
+      terjual: 28,
+      rating: 4.9
+    },
+    {
+      id: 4,
+      nama: 'Pintu Mahoni Ukir',
+      deskripsi: 'Pintu kayu mahoni dengan ukiran tradisional Jawa. Karya seni tinggi dengan detail yang indah.',
+      harga: 4500000,
+      kategori: 'Pintu',
+      jenisKayu: 'Kayu Mahoni',
+      panjang: 220,
+      lebar: 95,
+      tebal: 5,
+      material: 'Kayu Mahoni',
+      warna: 'Merah Tua',
+      gambar: '',
+      gambarUrl: '',
+      stok: 5,
+      tersedia: true,
+      terjual: 15,
+      rating: 5.0
+    },
+    {
+      id: 5,
+      nama: 'Jendela Casement Kayu Jati',
+      deskripsi: 'Jendela casement kayu jati dengan engsel samping. Memberikan sirkulasi udara yang baik.',
+      harga: 2100000,
+      kategori: 'Jendela',
+      jenisKayu: 'Kayu Jati',
+      panjang: 100,
+      lebar: 60,
+      tebal: 3,
+      material: 'Kayu Jati',
+      warna: 'Natural',
+      gambar: '',
+      gambarUrl: '',
+      stok: 20,
+      tersedia: true,
+      terjual: 38,
+      rating: 4.7
+    },
+    {
+      id: 6,
+      nama: 'Pintu Geser Minimalis',
+      deskripsi: 'Pintu geser kayu jati untuk hemat ruang. Cocok untuk apartemen dan rumah kecil.',
+      harga: 3800000,
+      kategori: 'Pintu',
+      jenisKayu: 'Kayu Jati',
+      panjang: 200,
+      lebar: 80,
+      tebal: 4,
+      material: 'Kayu Jati',
+      warna: 'Putih',
+      gambar: '',
+      gambarUrl: '',
+      stok: 12,
+      tersedia: true,
+      terjual: 22,
+      rating: 4.5
+    }
+  ];
 }
 
 export async function fetchKusenById(id: number): Promise<Kusen> {
-  const response = await fetch(`${API_URL}/api/kusen/${id}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch kusen details');
+  try {
+    const response = await fetch(`${API_URL}/api/kusen/${id}`);
+    if (!response.ok) {
+      console.warn('API not available, using mock data');
+      const mockList = getMockKusenList();
+      const mock = mockList.find(k => k.id === id);
+      if (!mock) throw new Error('Product not found');
+      return mock;
+    }
+    return response.json();
+  } catch (error) {
+    console.warn('Failed to fetch from API, using mock data:', error);
+    const mockList = getMockKusenList();
+    const mock = mockList.find(k => k.id === id);
+    if (!mock) throw new Error('Product not found');
+    return mock;
   }
-  return response.json();
 }
 
 export async function fetchKusenByCategory(kategori: string): Promise<Kusen[]> {
