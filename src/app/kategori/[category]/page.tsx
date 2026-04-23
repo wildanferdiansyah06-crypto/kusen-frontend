@@ -1,18 +1,75 @@
+'use client';
+
+import { useEffect, useState, useMemo } from 'react';
 import { fetchKusenByCategory, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
+export default function CategoryPage({ params }: { params: { category: string } }) {
+  const [kusenList, setKusenList] = useState<Kusen[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('Terbaru');
+  const [filterWood, setFilterWood] = useState('Semua');
+  const [filterPrice, setFilterPrice] = useState('Semua');
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
-  let kusenList: Kusen[] = [];
-  try {
-    kusenList = await fetchKusenByCategory(params.category);
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
-  }
+  useEffect(() => {
+    fetchKusenByCategory(params.category)
+      .then(data => {
+        setKusenList(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch products:', err);
+        setLoading(false);
+      });
+  }, [params.category]);
+
+  const filteredKusen = useMemo(() => {
+    let filtered = [...kusenList];
+
+    // Filter by wood type
+    if (filterWood !== 'Semua') {
+      filtered = filtered.filter(k => k.jenisKayu === filterWood);
+    }
+
+    // Filter by price
+    if (filterPrice !== 'Semua') {
+      if (filterPrice === 'Rp 0 - Rp 1.000.000') {
+        filtered = filtered.filter(k => k.harga <= 1000000);
+      } else if (filterPrice === 'Rp 1.000.000 - Rp 2.000.000') {
+        filtered = filtered.filter(k => k.harga > 1000000 && k.harga <= 2000000);
+      } else if (filterPrice === 'Rp 2.000.000 - Rp 5.000.000') {
+        filtered = filtered.filter(k => k.harga > 2000000 && k.harga <= 5000000);
+      } else if (filterPrice === 'Rp 5.000.000+') {
+        filtered = filtered.filter(k => k.harga > 5000000);
+      }
+    }
+
+    // Sort
+    if (sortBy === 'Terbaru') {
+      filtered.sort((a, b) => b.id - a.id);
+    } else if (sortBy === 'Harga Terendah') {
+      filtered.sort((a, b) => a.harga - b.harga);
+    } else if (sortBy === 'Harga Tertinggi') {
+      filtered.sort((a, b) => b.harga - a.harga);
+    } else if (sortBy === 'Terlaris') {
+      filtered.sort((a, b) => b.terjual - a.terjual);
+    } else if (sortBy === 'Rating Tertinggi') {
+      filtered.sort((a, b) => b.rating - a.rating);
+    }
+
+    return filtered;
+  }, [kusenList, sortBy, filterWood, filterPrice]);
 
   const categoryTitle = params.category.charAt(0).toUpperCase() + params.category.slice(1);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
+        <div className="text-2xl font-bold text-orange-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100">
@@ -46,7 +103,7 @@ export default async function CategoryPage({ params }: { params: { category: str
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4">{categoryTitle}</h1>
               <p className="text-lg md:text-xl opacity-90">
-                {kusenList.length} produk tersedia dalam kategori ini
+                {filteredKusen.length} produk tersedia dalam kategori ini
               </p>
             </div>
             <div className="hidden md:block text-8xl">
@@ -62,7 +119,12 @@ export default async function CategoryPage({ params }: { params: { category: str
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-gray-800">Urutkan:</span>
-              <select className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500" aria-label="Urutkan produk">
+              <select 
+                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500" 
+                aria-label="Urutkan produk"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
                 <option>Terbaru</option>
                 <option>Harga Terendah</option>
                 <option>Harga Tertinggi</option>
@@ -72,7 +134,12 @@ export default async function CategoryPage({ params }: { params: { category: str
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-gray-800">Jenis Kayu:</span>
-              <select className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500" aria-label="Filter berdasarkan jenis kayu">
+              <select 
+                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500" 
+                aria-label="Filter berdasarkan jenis kayu"
+                value={filterWood}
+                onChange={(e) => setFilterWood(e.target.value)}
+              >
                 <option>Semua</option>
                 <option>Kayu Jati</option>
                 <option>Kayu Meranti</option>
@@ -82,7 +149,12 @@ export default async function CategoryPage({ params }: { params: { category: str
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-gray-800">Harga:</span>
-              <select className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500" aria-label="Filter berdasarkan harga">
+              <select 
+                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500" 
+                aria-label="Filter berdasarkan harga"
+                value={filterPrice}
+                onChange={(e) => setFilterPrice(e.target.value)}
+              >
                 <option>Semua</option>
                 <option>Rp 0 - Rp 1.000.000</option>
                 <option>Rp 1.000.000 - Rp 2.000.000</option>
@@ -95,7 +167,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {kusenList.map((kusen) => (
+          {filteredKusen.map((kusen) => (
             <div key={kusen.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
               <div className="relative overflow-hidden">
                 {kusen.gambarUrl ? (
@@ -148,7 +220,7 @@ export default async function CategoryPage({ params }: { params: { category: str
           ))}
         </div>
 
-        {kusenList.length === 0 && (
+        {filteredKusen.length === 0 && (
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100">
             <div className="text-8xl mb-6">🔍</div>
             <h3 className="text-3xl font-bold text-gray-800 mb-4">Produk Tidak Ditemukan</h3>

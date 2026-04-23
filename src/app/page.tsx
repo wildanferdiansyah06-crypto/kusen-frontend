@@ -1,17 +1,44 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
+export default function Home() {
+  const [kusenList, setKusenList] = useState<Kusen[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Kusen[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
-export default async function Home() {
-  let kusenList: Kusen[] = [];
-  try {
-    kusenList = await fetchKusenList();
-  } catch (error) {
-    console.error('Failed to fetch products during build:', error);
+  useEffect(() => {
+    fetchKusenList()
+      .then(data => {
+        setKusenList(data);
+        const featured = data.filter(k => k.terjual >= 10).slice(0, 6);
+        setFeaturedProducts(featured);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch products during build:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center">
+        <div className="text-2xl font-bold text-orange-600">Loading...</div>
+      </div>
+    );
   }
-  const featuredProducts = kusenList.filter(k => k.terjual >= 10).slice(0, 6);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100">
@@ -25,7 +52,7 @@ export default async function Home() {
                 Toko Kusen Online
               </span>
             </Link>
-            <nav className="hidden md:flex gap-6 text-sm font-medium">
+            <nav className="hidden md:flex gap-6 text-sm font-medium items-center">
               <Link href="/" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Beranda</Link>
               <Link href="/produk" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Semua Produk</Link>
               <Link href="/kategori/Pintu" className="hover:text-amber-200 hover:scale-105 transition-all duration-200">Pintu</Link>
@@ -33,6 +60,15 @@ export default async function Home() {
               <Link href="/cart" className="hover:text-amber-200 hover:scale-105 transition-all duration-200 flex items-center gap-1">
                 🛒 Keranjang
               </Link>
+              <form onSubmit={handleSearch} className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Cari..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-white/20 text-white placeholder-white/70 px-3 py-1 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-white/50 w-32"
+                />
+              </form>
             </nav>
           </div>
         </div>
