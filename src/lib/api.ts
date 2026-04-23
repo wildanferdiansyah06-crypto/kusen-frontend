@@ -37,11 +37,10 @@ export async function fetchKusenById(id: number): Promise<Kusen> {
 }
 
 export async function fetchKusenByCategory(kategori: string): Promise<Kusen[]> {
-  const response = await fetch(`${API_URL}/kategori/${kategori}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch kusen by category');
-  }
-  return response.json();
+  const allKusen = await fetchKusenList();
+  return allKusen.filter(k => 
+    k.kategori.toLowerCase() === kategori.toLowerCase() && k.tersedia
+  );
 }
 
 export async function addToCart(productId: number, quantity: number = 1): Promise<void> {
