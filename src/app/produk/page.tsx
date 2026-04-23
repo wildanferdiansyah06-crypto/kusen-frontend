@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
