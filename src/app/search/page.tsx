@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
   const [filteredKusen, setFilteredKusen] = useState<Kusen[]>([]);
@@ -217,5 +217,13 @@ export default function SearchPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center"><div className="text-2xl font-bold text-orange-600">Loading...</div></div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }
