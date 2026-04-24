@@ -119,6 +119,36 @@ const team = [
   },
 ];
 
+const guarantees = [
+  'Material legal dan terkurasi sesuai kebutuhan proyek',
+  'Ketelitian dimensi untuk meminimalkan revisi lapangan',
+  'Progres kerja transparan dari awal hingga pengiriman',
+  'Dukungan konsultasi teknis sebelum dan sesudah pembelian',
+];
+
+const faqs = [
+  {
+    question: 'Apakah Kusen Nusantara melayani proyek di luar kota?',
+    answer:
+      'Ya. Kami melayani pengiriman ke berbagai kota di Indonesia dengan penjadwalan sesuai kebutuhan proyek Anda.',
+  },
+  {
+    question: 'Berapa lama waktu produksi kusen kayu?',
+    answer:
+      'Durasi tergantung jumlah, model, dan material. Setelah brief proyek diterima, kami akan berikan estimasi waktu yang jelas.',
+  },
+  {
+    question: 'Apakah bisa custom desain sesuai gambar arsitek?',
+    answer:
+      'Bisa. Tim desain kami siap menyesuaikan spesifikasi dari gambar arsitek maupun kebutuhan custom lainnya.',
+  },
+  {
+    question: 'Bagaimana proses konsultasi awal?',
+    answer:
+      'Anda dapat mulai dari WhatsApp atau form kontak. Tim kami akan menanyakan kebutuhan dasar lalu memberi rekomendasi awal.',
+  },
+];
+
 export default function AboutPage() {
   const thisYear = new Date().getFullYear();
 
@@ -442,6 +472,61 @@ export default function AboutPage() {
                   </Link>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Guarantee */}
+        <section className="section bg-[var(--color-cream)]">
+          <div className="container-main">
+            <div className="max-w-4xl mx-auto bg-[var(--color-walnut)] rounded-3xl p-8 md:p-10">
+              <h2 className="font-heading text-3xl md:text-4xl text-white mb-4 text-center">
+                Komitmen Layanan Kami
+              </h2>
+              <p className="text-[var(--color-mist)] text-center mb-8">
+                Standar layanan yang kami pegang agar Anda tenang sepanjang proses proyek berjalan
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {guarantees.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-xl bg-white/10 border border-white/20 p-4 text-[var(--color-mist)] flex items-start gap-3"
+                  >
+                    <CheckCircle2 className="w-5 h-5 mt-0.5 text-[var(--color-gold)]" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="section bg-[var(--color-linen)]">
+          <div className="container-main">
+            <div className="text-center mb-12">
+              <h2 className="font-heading text-3xl md:text-4xl text-[var(--color-walnut)] mb-4">
+                Pertanyaan Umum
+              </h2>
+              <p className="text-[var(--color-stone)] text-lg">
+                Jawaban singkat sebelum Anda memulai konsultasi
+              </p>
+            </div>
+            <div className="max-w-4xl mx-auto grid gap-4">
+              {faqs.map((item) => (
+                <details
+                  key={item.question}
+                  className="group rounded-2xl bg-[var(--color-parchment)] border border-[var(--color-mist)] p-6"
+                >
+                  <summary className="cursor-pointer list-none font-display font-bold text-[var(--color-walnut)] text-lg flex items-center justify-between gap-3">
+                    <span>{item.question}</span>
+                    <span className="text-[var(--color-teak)] group-open:rotate-45 transition-transform">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-4 text-[var(--color-stone)] leading-relaxed">{item.answer}</p>
+                </details>
+              ))}
             </div>
           </div>
         </section>
