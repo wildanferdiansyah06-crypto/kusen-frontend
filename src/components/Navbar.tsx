@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Search, Heart, ShoppingBag, Menu, X, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { KusenButton } from './KusenButton';
 
 export function Navbar() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -194,10 +196,15 @@ export function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-lg font-medium text-white hover:text-[var(--color-gold)] transition-colors py-2"
+                    className={`text-lg font-medium text-white hover:text-[var(--color-gold)] transition-colors py-2 relative ${
+                      pathname === link.href ? 'text-[var(--color-gold)]' : ''
+                    }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.label}
+                    {pathname === link.href && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-gold)]" />
+                    )}
                   </Link>
                 ))}
               </div>
