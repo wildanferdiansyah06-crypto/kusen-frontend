@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Search, Heart, ShoppingBag, Menu, X, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,12 +11,32 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          setIsScrolled(currentScrollY > 20);
+
+          if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+            // Scrolling down
+            setIsVisible(false);
+          } else {
+            // Scrolling up
+            setIsVisible(true);
+          }
+
+          lastScrollY.current = currentScrollY;
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -34,14 +54,17 @@ export function Navbar() {
   const navLinks = [
     { href: '/produk', label: 'Produk' },
     { href: '/kategori', label: 'Kategori' },
-    { href: '/tentang-kami', label: 'Tentang Kami' },
+    { href: '/tentang', label: 'Tentang Kami' },
     { href: '/blog', label: 'Blog' },
     { href: '/kontak', label: 'Kontak' },
   ];
 
   return (
     <>
-      <nav
+      <motion.nav
+        initial={{ y: 0 }}
+        animate={{ y: isVisible ? 0 : -72 }}
+        transition={{ duration: 0.3 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
             ? 'bg-[rgba(245,239,230,0.92)] backdrop-blur-md border-b border-[var(--color-mist)]'
@@ -102,9 +125,11 @@ export function Navbar() {
               )}
             </Link>
             
-            <KusenButton size="sm" className="rounded-full">
-              Konsultasi Gratis
-            </KusenButton>
+            <Link href="/kontak">
+              <KusenButton size="sm" className="rounded-full">
+                Konsultasi Gratis
+              </KusenButton>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -119,7 +144,7 @@ export function Navbar() {
             )}
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile Menu Drawer */}
       <AnimatePresence>
@@ -182,9 +207,11 @@ export function Navbar() {
                   <ShoppingBag className="w-5 h-5" />
                   <span>Keranjang ({cartCount})</span>
                 </Link>
-                <KusenButton variant="primary" className="w-full mt-4">
-                  Konsultasi Gratis
-                </KusenButton>
+                <Link href="/kontak" onClick={() => setIsMobileMenuOpen(false)}>
+                  <KusenButton variant="primary" className="w-full mt-4">
+                    Konsultasi Gratis
+                  </KusenButton>
+                </Link>
               </div>
             </motion.div>
           </motion.div>

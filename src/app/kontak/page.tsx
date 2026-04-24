@@ -73,8 +73,9 @@ export default function ContactPage() {
                       Alamat
                     </h3>
                     <p className="text-[var(--color-stone)]">
-                      Jl. Kayu Jati No. 123<br />
-                      Jepara, Jawa Tengah 59411
+                      Jl. Jember<br />
+                      Utara Balai Desa Silo<br />
+                      Jember, Indonesia
                     </p>
                   </div>
                 </div>
@@ -88,8 +89,9 @@ export default function ContactPage() {
                       Telepon
                     </h3>
                     <p className="text-[var(--color-stone)]">
-                      +62 21 1234 5678<br />
-                      +62 812 3456 7890 (WhatsApp)
+                      <a href="https://wa.me/6281936442406" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-teak)] transition-colors">
+                        +62 819 3644 2406 (WhatsApp)
+                      </a>
                     </p>
                   </div>
                 </div>
@@ -103,8 +105,7 @@ export default function ContactPage() {
                       Email
                     </h3>
                     <p className="text-[var(--color-stone)]">
-                      info@kusennusantara.com<br />
-                      sales@kusennusantara.com
+                      info@kusennusantara.com
                     </p>
                   </div>
                 </div>
@@ -128,13 +129,14 @@ export default function ContactPage() {
               {/* Map */}
               <div className="bg-[var(--color-parchment)] rounded-2xl overflow-hidden h-[300px]">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.0000000000001!2d110.6666667!3d-6.5833333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e71100000000001%3A0x0!2zNsKwMzUnMDAuMCJTIDExMMKwNDAnMDAuMCJF!5e0!3m2!1sid!2sid!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.5!2d113.853977!3d-8.215410!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd5e5d000000000%3A0x1234567890!2sJl.+Jember%2C+Utara+Balai+Desa+Silo%2C+Jember!5e0!3m2!1sid!2sid!4v1713950000000"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
+                  title="Lokasi Kusen Nusantara"
                 />
               </div>
             </div>

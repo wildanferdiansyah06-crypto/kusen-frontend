@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
 
 export function FloatingWhatsApp() {
-  const phoneNumber = '6281234567890';
+  const phoneNumber = '6281936442406';
   const message = encodeURIComponent('Halo, saya ingin konsultasi tentang kusen kayu.');
 
   return (

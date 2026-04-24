@@ -13,10 +13,10 @@ export function KusenButton({
   ...props 
 }: KusenButtonProps) {
   const variantStyles = {
-    primary: "bg-[var(--color-teak)] text-white hover:bg-[var(--color-walnut)] hover:-translate-y-0.5 transition-all duration-300",
-    secondary: "border-[var(--color-teak)] text-[var(--color-teak)] bg-transparent hover:bg-[var(--color-linen)] transition-all duration-300",
-    outline: "border-[var(--color-teak)] text-[var(--color-teak)] bg-transparent hover:bg-[var(--color-linen)] transition-all duration-300",
-    ghost: "hover:bg-[var(--color-linen)] text-[var(--color-charcoal)] transition-all duration-300",
+    primary: "bg-[var(--color-teak)] text-white hover:bg-[var(--color-walnut)] hover:-translate-y-0.5 active:scale-95 active:translate-y-0 transition-all duration-300",
+    secondary: "border-[var(--color-teak)] text-[var(--color-teak)] bg-transparent hover:bg-[var(--color-linen)] active:scale-95 transition-all duration-300",
+    outline: "border-[var(--color-teak)] text-[var(--color-teak)] bg-transparent hover:bg-[var(--color-linen)] active:scale-95 transition-all duration-300",
+    ghost: "hover:bg-[var(--color-linen)] text-[var(--color-charcoal)] active:scale-95 transition-all duration-300",
   };
 
   const sizeStyles = {
