@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 import { fetchKusenList, Kusen } from '@/lib/api';
 import Link from 'next/link';
-import Image from 'next/image';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
+import { FloatingWhatsApp } from '@/components/FloatingWhatsApp';
+import { KusenButton } from '@/components/KusenButton';
+import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<number[]>(() => {
@@ -17,16 +22,21 @@ export default function WishlistPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchKusenList()
-      .then(data => {
-        const wishlistItems = data.filter(k => wishlist.includes(k.id));
-        setWishlistProducts(wishlistItems);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch products:', err);
-        setLoading(false);
-      });
+    if (wishlist.length > 0) {
+      fetchKusenList()
+        .then(data => {
+          const wishlistItems = data.filter(k => wishlist.includes(k.id));
+          setWishlistProducts(wishlistItems);
+        })
+        .catch(err => {
+          console.error('Failed to fetch products:', err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
   }, [wishlist]);
 
   const toggleWishlist = (productId: number) => {
@@ -35,173 +45,175 @@ export default function WishlistPage() {
       : [...wishlist, productId];
     setWishlist(newWishlist);
     localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    if (wishlist.includes(productId)) {
+      toast.success('Dihapus dari wishlist');
+    } else {
+      toast.success('Ditambahkan ke wishlist ♡');
+    }
+  };
+
+  const addToCart = (kusen: Kusen) => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    if (cart[kusen.id]) {
+      cart[kusen.id].quantity += 1;
+    } else {
+      cart[kusen.id] = { kusen, quantity: 1 };
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    toast.success('Produk ditambahkan ke keranjang 🛒');
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const getImageUrl = (kusen: Kusen) => {
+    if (kusen.gambarUrl) return kusen.gambarUrl;
+    const categoryImages: Record<string, string> = {
+      'Pintu': 'https://images.pexels.com/photos/6489117/pexels-photo-6489117.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
+      'Jendela': 'https://images.pexels.com/photos/3797991/pexels-photo-3797991.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
+      'Daun Pintu': 'https://images.pexels.com/photos/3178786/pexels-photo-3178786.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop',
+    };
+    return categoryImages[kusen.kategori] || 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-xl backdrop-blur-sm sticky top-0 z-50 border-b border-slate-700">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
-              <span className="text-4xl drop-shadow-lg">🏠</span>
-              <span className="bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text text-transparent font-extrabold text-2xl md:text-3xl tracking-tight">
-                Toko Kusen Online
-              </span>
-            </Link>
-            <nav className="hidden md:flex gap-6 text-sm font-medium">
-              <Link href="/" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Beranda</Link>
-              <Link href="/produk" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Semua Produk</Link>
-              <Link href="/kategori/Pintu" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Pintu</Link>
-              <Link href="/kategori/Jendela" className="hover:text-slate-300 hover:scale-105 transition-all duration-200">Jendela</Link>
-              <Link href="/cart" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1">
-                🛒 Keranjang
-              </Link>
-              <Link href="/wishlist" className="hover:text-slate-300 hover:scale-105 transition-all duration-200 flex items-center gap-1 font-bold">
-                ❤️ Wishlist
-              </Link>
-            </nav>
+    <div className="min-h-screen bg-[var(--color-cream)]">
+      <Navbar />
+      <main className="pt-24">
+        <div className="section bg-[var(--color-walnut)]">
+          <div className="container-main">
+            <h1 className="font-heading text-4xl md:text-5xl text-white mb-4">
+              Wishlist Saya
+            </h1>
+            <p className="text-[var(--color-mist)] text-lg">
+              {wishlistProducts.length} produk tersimpan
+            </p>
           </div>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Wishlist Header */}
-        <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 rounded-3xl p-8 md:p-12 text-white mb-12 shadow-2xl">
-          <div className="flex items-center gap-4">
-            <div className="text-6xl">❤️</div>
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">Wishlist Saya</h1>
-              <p className="text-lg md:text-xl opacity-90">
-                {wishlistProducts.length} produk tersimpan
-              </p>
+        <div className="container-main py-16">
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="text-2xl font-bold text-[var(--color-stone)]">Loading...</div>
             </div>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="text-2xl font-bold text-slate-600">Loading...</div>
-          </div>
-        ) : (
-          <>
-            {wishlistProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {wishlistProducts.map((kusen) => (
-                  <div key={kusen.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
-                    <div className="relative overflow-hidden">
-                      {kusen.gambarUrl ? (
-                        <Image 
-                          src={kusen.gambarUrl} 
-                          alt={kusen.nama} 
-                          width={400} 
-                          height={200} 
-                          className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+          ) : (
+            <>
+              {wishlistProducts.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {wishlistProducts.map((kusen) => (
+                    <div
+                      key={kusen.id}
+                      className="bg-[var(--color-parchment)] rounded-2xl overflow-hidden border border-[var(--color-mist)] hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                    >
+                      {/* Image */}
+                      <div className="relative h-56 overflow-hidden bg-[var(--color-linen)]">
+                        <img
+                          src={getImageUrl(kusen)}
+                          alt={kusen.nama}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
-                      ) : (
-                        <div className="w-full h-56 bg-gradient-to-br from-slate-200 to-gray-300 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                          <span className="text-7xl">🪵</span>
-                        </div>
-                      )}
-                      {kusen.terjual < 10 && (
-                        <span className="absolute top-3 left-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Baru</span>
-                      )}
-                      {kusen.terjual >= 50 && (
-                        <span className="absolute top-3 left-3 bg-slate-700 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Best Seller</span>
-                      )}
-                      {!kusen.tersedia && (
-                        <span className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">Habis</span>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
-                    </div>
-                    <div className="p-6">
-                      <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">{kusen.kategori}</span>
-                      <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3 line-clamp-2 group-hover:text-slate-600 transition-colors">{kusen.nama}</h3>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-yellow-500 text-lg">★★★★★</span>
-                        <span className="text-sm text-gray-600 font-medium">({kusen.rating})</span>
-                        <span className="text-sm text-gray-600">{kusen.terjual} terjual</span>
-                      </div>
-                      <div className="flex gap-2 mb-4 text-sm text-gray-600">
-                        <span className="bg-gray-100 px-2 py-1 rounded">{kusen.jenisKayu}</span>
-                        <span className="bg-gray-100 px-2 py-1 rounded">{kusen.panjang} cm</span>
-                        <span className="bg-gray-100 px-2 py-1 rounded">{kusen.lebar} cm</span>
-                      </div>
-                      <div className="text-2xl font-bold text-slate-700 mb-5">
-                        Rp {kusen.harga.toLocaleString('id-ID')}
-                      </div>
-                      <div className="flex gap-3">
-                        <button 
+                        {kusen.terjual < 10 && (
+                          <span className="absolute top-3 left-3 bg-[var(--color-forest)] text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                            Baru
+                          </span>
+                        )}
+                        {kusen.terjual >= 50 && (
+                          <span className="absolute top-3 left-3 bg-[var(--color-rust)] text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                            Terlaris
+                          </span>
+                        )}
+                        <button
                           onClick={() => toggleWishlist(kusen.id)}
-                          className="bg-red-100 text-red-600 px-4 py-3 rounded-xl font-bold hover:bg-red-200 transition-all duration-300 flex items-center justify-center"
+                          className="absolute top-3 right-3 p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
+                          aria-label="Remove from wishlist"
                         >
-                          ❤️
+                          <Heart className="w-5 h-5 fill-red-500 text-red-500" />
                         </button>
-                        <Link href={`/produk/${kusen.id}`} className="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-xl text-center font-bold hover:from-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg">
-                          Detail
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6">
+                        <span className="text-xs font-bold text-[var(--color-stone)] uppercase tracking-wide">
+                          {kusen.kategori}
+                        </span>
+                        <Link
+                          href={`/produk/${kusen.id}`}
+                          className="block font-heading text-xl text-[var(--color-walnut)] mt-2 mb-3 line-clamp-2 hover:text-[var(--color-teak)] transition-colors"
+                        >
+                          {kusen.nama}
                         </Link>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-[var(--color-gold)]">⭐</span>
+                          <span className="text-sm text-[var(--color-stone)] font-medium">
+                            {kusen.rating}
+                          </span>
+                          <span className="text-sm text-[var(--color-stone)]">
+                            ({kusen.terjual} terjual)
+                          </span>
+                        </div>
+                        <div className="flex gap-2 mb-4 text-sm text-[var(--color-stone)]">
+                          <span className="bg-[var(--color-linen)] px-2 py-1 rounded">
+                            {kusen.jenisKayu}
+                          </span>
+                          <span className="bg-[var(--color-linen)] px-2 py-1 rounded">
+                            {kusen.panjang} cm
+                          </span>
+                          <span className="bg-[var(--color-linen)] px-2 py-1 rounded">
+                            {kusen.lebar} cm
+                          </span>
+                        </div>
+                        <div className="text-2xl font-bold text-[var(--color-gold)] mb-5">
+                          {formatPrice(kusen.harga)}
+                        </div>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => toggleWishlist(kusen.id)}
+                            className="p-3 bg-[var(--color-linen)] text-[var(--color-rust)] rounded-xl font-bold hover:bg-[var(--color-rust)] hover:text-white transition-all duration-300"
+                            aria-label="Remove from wishlist"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => addToCart(kusen)}
+                            className="flex-1 bg-[var(--color-teak)] text-white py-3 rounded-xl font-bold hover:bg-[var(--color-walnut)] transition-all duration-300 flex items-center justify-center gap-2"
+                          >
+                            <ShoppingBag className="w-5 h-5" />
+                            Keranjang
+                          </button>
+                        </div>
                       </div>
                     </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-[var(--color-parchment)] rounded-3xl p-12 text-center border border-[var(--color-mist)]">
+                  <div className="w-24 h-24 bg-[var(--color-linen)] rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Heart className="w-12 h-12 text-[var(--color-stone)]" />
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100">
-                <div className="text-8xl mb-6">❤️</div>
-                <h3 className="text-3xl font-bold text-gray-800 mb-4">Wishlist Kosong</h3>
-                <p className="text-gray-600 text-lg mb-8">Belum ada produk yang Anda simpan di wishlist.</p>
-                <Link href="/produk" className="inline-block bg-gradient-to-r from-orange-600 to-amber-600 text-white px-10 py-4 rounded-xl font-bold hover:from-orange-700 hover:to-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
-                  Jelajahi Produk
-                </Link>
-              </div>
-            )}
-          </>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div>
-              <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">🏠 Toko Kusen Online</h3>
-              <p className="text-gray-400 text-base mb-6 leading-relaxed">Penyedia kusen kayu berkualitas premium untuk segala kebutuhan konstruksi dan renovasi rumah Anda.</p>
-              <div className="flex gap-4">
-                <a href="#" className="text-3xl hover:text-orange-400 transition hover:scale-110 transform duration-200">📘</a>
-                <a href="#" className="text-3xl hover:text-orange-400 transition hover:scale-110 transform duration-200">📸</a>
-                <a href="#" className="text-3xl hover:text-orange-400 transition hover:scale-110 transform duration-200">🐦</a>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold mb-6 text-lg">Kategori</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li><Link href="/kategori/Pintu" className="hover:text-orange-400 hover:translate-x-2 transition-all duration-200 inline-block">Pintu</Link></li>
-                <li><Link href="/kategori/Jendela" className="hover:text-orange-400 hover:translate-x-2 transition-all duration-200 inline-block">Jendela</Link></li>
-                <li><Link href="/kategori/Daun Pintu" className="hover:text-orange-400 hover:translate-x-2 transition-all duration-200 inline-block">Daun Pintu</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-6 text-lg">Informasi</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li><Link href="/tentang" className="hover:text-orange-400 hover:translate-x-2 transition-all duration-200 inline-block">Tentang Kami</Link></li>
-                <li><Link href="/kontak" className="hover:text-orange-400 hover:translate-x-2 transition-all duration-200 inline-block">Kontak</Link></li>
-                <li><Link href="/pesanan" className="hover:text-orange-400 hover:translate-x-2 transition-all duration-200 inline-block">Pesanan Saya</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-6 text-lg">Hubungi Kami</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li className="flex items-center gap-2">📍 Jl. Kayu Jati No. 123, Jakarta</li>
-                <li className="flex items-center gap-2">📞 +62 21 1234 5678</li>
-                <li className="flex items-center gap-2">✉️ info@tokokusen.com</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Toko Kusen Online. Semua hak dilindungi.</p>
-          </div>
+                  <h3 className="font-heading text-3xl text-[var(--color-walnut)] mb-4">
+                    Wishlist Kosong
+                  </h3>
+                  <p className="text-[var(--color-stone)] text-lg mb-8 max-w-md mx-auto">
+                    Belum ada produk yang Anda simpan di wishlist. Yuk, jelajahi koleksi kusen kayu kami!
+                  </p>
+                  <Link href="/produk">
+                    <KusenButton size="lg">
+                      Jelajahi Produk
+                    </KusenButton>
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
         </div>
-      </footer>
+      </main>
+      <Footer />
+      <FloatingWhatsApp />
     </div>
   );
 }

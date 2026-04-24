@@ -100,13 +100,13 @@ const stats = [
 
 const team = [
   {
-    name: 'Budi Santoso',
+    name: 'Tohari',
     role: 'Founder & Kepala Produksi',
     image:
       'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1000',
   },
   {
-    name: 'Ratna Permatasari',
+    name: 'Fardan',
     role: 'Head of Design & Konsultasi',
     image:
       'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1000',

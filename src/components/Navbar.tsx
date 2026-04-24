@@ -49,6 +49,18 @@ export function Navbar() {
       if (wishlist) setWishlistCount(JSON.parse(wishlist).length);
     };
     loadCounts();
+
+    // Listen for storage changes (updates from other tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'cart' || e.key === 'wishlist') {
+        loadCounts();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const navLinks = [
