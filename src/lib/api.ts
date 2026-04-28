@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export interface Kusen {
   id: number;
@@ -22,7 +22,7 @@ export interface Kusen {
 
 export async function fetchKusenList(): Promise<Kusen[]> {
   try {
-    const response = await fetch(`${API_URL}/api/kusen`);
+    const response = await fetch(`/api/kusen`);
     if (!response.ok) {
       console.warn('API not available, using mock data');
       return getMockKusenList();
@@ -269,7 +269,7 @@ function getMockKusenList(): Kusen[] {
 
 export async function fetchKusenById(id: number): Promise<Kusen> {
   try {
-    const response = await fetch(`${API_URL}/api/kusen/${id}`);
+    const response = await fetch(`/api/kusen/${id}`);
     if (!response.ok) {
       console.warn('API not available, using mock data');
       const mockList = getMockKusenList();
@@ -295,7 +295,7 @@ export async function fetchKusenByCategory(kategori: string): Promise<Kusen[]> {
 }
 
 export async function addToCart(productId: number, quantity: number = 1): Promise<void> {
-  const response = await fetch(`${API_URL}/cart/add`, {
+  const response = await fetch(`/api/cart`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -309,7 +309,7 @@ export async function addToCart(productId: number, quantity: number = 1): Promis
 
 export async function getCartCount(sessionId?: string): Promise<number> {
   if (!sessionId) return 0;
-  const response = await fetch(`${API_URL}/api/cart/count?sessionId=${sessionId}`);
+  const response = await fetch(`/api/cart/count?sessionId=${sessionId}`);
   if (!response.ok) {
     throw new Error('Failed to get cart count');
   }
@@ -326,7 +326,7 @@ export interface CartItem {
 
 export async function getCartItems(sessionId?: string): Promise<CartItem[]> {
   if (!sessionId) return [];
-  const response = await fetch(`${API_URL}/cart?sessionId=${sessionId}`);
+  const response = await fetch(`/api/cart?sessionId=${sessionId}`);
   if (!response.ok) {
     throw new Error('Failed to get cart items');
   }

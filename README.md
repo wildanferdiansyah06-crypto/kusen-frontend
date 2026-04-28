@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kusen E-commerce Platform
 
-## Getting Started
+Platform e-commerce modern untuk produk kusen kayu yang dibangun dengan Next.js 16.
 
-First, run the development server:
+## 🚀 Stack Teknologi
 
+- **Frontend**: Next.js 16 (App Router), React 19, TypeScript
+- **Backend**: Next.js API Routes & Server Actions  
+- **Database**: Mock Data (Ready for database integration)
+- **Styling**: Tailwind CSS 4
+- **UI Components**: shadcn/ui, Lucide Icons
+- **Deployment**: Vercel-ready
+
+## 📦 API Endpoints
+
+### Product Management
+- `GET /api/kusen` - Daftar semua produk
+- `GET /api/kusen/[id]` - Detail produk spesifik
+
+### Cart Management  
+- `GET /api/cart` - Get cart items
+- `POST /api/cart` - Add item to cart
+- `GET /api/cart/count` - Get cart item count
+
+## 🛠 Setup Development
+
+1. **Install dependencies**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Environment variables**
+```bash
+# Opsional - untuk database integration
+# NEXT_PUBLIC_API_URL=
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Configure Database (Opsional)**
+```bash
+# Jika mau database integration, setup sesuai kebutuhan
+# Saat ini menggunakan mock data
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Run development server**
+```bash
+npm run dev
+```
 
-## Learn More
+Buka [http://localhost:3000](http://localhost:3000) untuk melihat hasil.
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Deploy ke Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Langkah 1: Deploy Langsung
+```bash
+# Install Vercel CLI
+npm i -g vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Deploy
+vercel
+```
 
-## Deploy on Vercel
+Atau connect repository GitHub ke Vercel untuk auto-deployment.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Langkah 2: Database Integration (Opsional)
+- Bisa tambahkan database seperti Supabase, Vercel Postgres, atau Sanity
+- Update API endpoints untuk connect ke database
+- Environment variables di Vercel dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Struktur Project
+
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── api/            # API Routes
+│   │   ├── kusen/      # Product endpoints
+│   │   └── cart/       # Cart endpoints
+│   └── (pages)/        # Page components
+├── components/         # Reusable UI components
+├── lib/               # Utility functions & API client
+└── styles/            # Global styles
+```
+
+## 🔄 Mock Data System
+
+Aplikasi ini menggunakan mock data sehingga bisa langsung dijalankan tanpa setup database. Siap untuk diintegrasikan dengan database apa saja.
+
+## 🎯 Features
+
+- ✅ Product catalog dengan filtering & search
+- ✅ Shopping cart dengan session management
+- ✅ Responsive design untuk mobile & desktop
+- ✅ SEO optimized dengan static generation
+- ✅ TypeScript untuk type safety
+- ✅ Modern UI dengan Tailwind CSS
+
+## 📝 Development Notes
+
+- API routes menggunakan mock data (ready untuk database integration)
+- Cart menggunakan in-memory storage (bisa diupgrade ke database)
+- Semua API endpoints memiliki error handling yang proper
+- Clean project structure tanpa dependencies yang tidak perlu
